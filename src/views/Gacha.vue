@@ -595,63 +595,69 @@ const performGacha = async (times) => {
   }
   if (isDrawing.value) return
   isDrawing.value = true
-  // 扣除灵石
-  playerStore.spiritStones -= cost
   // 开始抽卡动画
   isShaking.value = true
   await new Promise(resolve => setTimeout(resolve, 1000))
   isShaking.value = false
   isOpening.value = true
   await new Promise(resolve => setTimeout(resolve, 1000))
-  // 生成抽卡结果
-  const results = Array(times).fill().map(() => {
-    if (gachaType.value === 'all') {
-      return drawFromAllPool()
-    } else {
-      return gachaType.value === 'equipment' ? drawSingleEquip() : drawSinglePet()
-    }
-  })
-  // 添加到背包
-  results.forEach(item => {
-    if (item.type === 'pet') {
-      // 根据品质获得精华
-      const rarityConfig = playerStore.petConfig.rarityMap[item.rarity]
-      if (rarityConfig) {
-        playerStore.petEssence += rarityConfig.essenceBonus
+  let results = []
+  try {
+    // 生成抽卡结果
+    results = Array(times).fill().map(() => {
+      if (gachaType.value === 'all') {
+        return drawFromAllPool()
+      } else {
+        return gachaType.value === 'equipment' ? drawSingleEquip() : drawSinglePet()
       }
-      // 检查是否需要自动放生
-      if (playerStore.autoReleaseRarities.length > 0
-        && (playerStore.autoReleaseRarities.includes('all')
-          || playerStore.autoReleaseRarities.includes(item.rarity))) {
-        autoReleasedCount.value++
-        return // 不添加到背包
-      }
-    } else if (equipmentTypes2.includes(item.type)) {
-      // 检查是否需要自动出售
-      if (playerStore.autoSellQualities.length > 0 &&
-        (playerStore.autoSellQualities.includes('all') ||
-          playerStore.autoSellQualities.includes(item.quality))) {
-        // 计算出售价格
-        const qualityPrices = {
-          mythic: 6,
-          legendary: 5,
-          epic: 4,
-          rare: 3,
-          uncommon: 2,
-          common: 1
-        }
-        const basePrice = qualityPrices[item.quality] || 1
-        playerStore.reinforceStones += basePrice
-        autoSoldCount.value++
-        autoSoldIncome.value += basePrice
-        return // 不添加到背包
-      }
-    }
-    playerStore.items.push({
-      ...item,
-      id: Date.now() + Math.random()
     })
-  })
+    // 添加到背包
+    results.forEach(item => {
+      if (item.type === 'pet') {
+        // 根据品质获得精华
+        const rarityConfig = playerStore.petConfig.rarityMap[item.rarity]
+        if (rarityConfig) {
+          playerStore.petEssence += rarityConfig.essenceBonus
+        }
+        // 检查是否需要自动放生
+        if (playerStore.autoReleaseRarities.length > 0
+          && (playerStore.autoReleaseRarities.includes('all')
+            || playerStore.autoReleaseRarities.includes(item.rarity))) {
+          autoReleasedCount.value++
+          return // 不添加到背包
+        }
+      } else if (equipmentTypes2.includes(item.type)) {
+        // 检查是否需要自动出售
+        if (playerStore.autoSellQualities.length > 0 &&
+          (playerStore.autoSellQualities.includes('all') ||
+            playerStore.autoSellQualities.includes(item.quality))) {
+          // 计算出售价格
+          const qualityPrices = {
+            mythic: 6,
+            legendary: 5,
+            epic: 4,
+            rare: 3,
+            uncommon: 2,
+            common: 1
+          }
+          const basePrice = qualityPrices[item.quality] || 1
+          playerStore.reinforceStones += basePrice
+          autoSoldCount.value++
+          autoSoldIncome.value += basePrice
+          return // 不添加到背包
+        }
+      }
+      playerStore.items.push({
+        ...item,
+        id: Date.now() + Math.random()
+      })
+    })
+    // 扣除灵石
+    playerStore.spiritStones -= cost
+  } catch (error) {
+    message.error('抽卡失败，请重试')
+    console.error(error)
+  }
   // 显示自动处理结果通知
   if (autoSoldCount.value) {
     message.success(`自动出售了 ${autoSoldCount.value} 件装备，获得 ${autoSoldIncome.value} 强化石`)
@@ -773,7 +779,7 @@ const handleAutoReleaseChange = (values) => {
             <div class="gacha-item" :class="{
               'shake': isShaking,
               'open': isOpening
-              }">
+            }">
               {{ types[gachaType] }}
             </div>
           </div>
@@ -837,8 +843,8 @@ const handleAutoReleaseChange = (values) => {
                 <div v-for="item in currentPageResults" :key="item.id"
                   :class="['result-item', { 'wish-bonus': playerStore.wishlistEnabled && ((item.qualityInfo && playerStore.selectedWishEquipQuality === item.quality) || (item.type === 'pet' && playerStore.selectedWishPetRarity === item.rarity)) }]"
                   :style="{
-                borderColor: item.qualityInfo ? item.qualityInfo.color : petRarities[item.rarity]?.color || '#CCCCCC'
-              }">
+                    borderColor: item.qualityInfo ? item.qualityInfo.color : petRarities[item.rarity]?.color || '#CCCCCC'
+                  }">
                   <h4>{{ item.name }}</h4>
                   <p>品质：{{ item.qualityInfo ? item.qualityInfo.name : (petRarities[item.rarity]?.name || '未知') }}</p>
                   <p v-if="equipmentTypes2.includes(item.type)">类型：{{ equipmentTypes[item.equipType]?.name }}</p>
@@ -1081,6 +1087,7 @@ const handleAutoReleaseChange = (values) => {
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: rotate(0deg);
@@ -1170,6 +1177,7 @@ const handleAutoReleaseChange = (values) => {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 .wishlist-button {
   position: absolute;
   top: 20px;
@@ -1197,6 +1205,7 @@ const handleAutoReleaseChange = (values) => {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

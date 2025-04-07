@@ -131,7 +131,7 @@ const handleMenuClick = (key) => {
               <div class="header-content">
                 <n-page-header>
                   <template #title>
-                    我的放置仙途
+                    仙途-放置
                   </template>
                   <template #extra>
                     <n-button quaternary circle @click="playerStore.toggle">
@@ -154,7 +154,7 @@ const handleMenuClick = (key) => {
               <div class="content-wrapper">
                 <n-card>
                   <n-space vertical>
-                    <n-descriptions bordered>
+                    <n-descriptions :column="2" label-placement='left'>
                       <n-descriptions-item label="道号">
                         {{ playerStore.name }}
                       </n-descriptions-item>
@@ -174,95 +174,101 @@ const handleMenuClick = (key) => {
                         {{ playerStore.reinforceStones }}
                       </n-descriptions-item>
                     </n-descriptions>
-                    <n-collapse>
-                      <n-collapse-item title="详细信息" name="1">
-                        <n-divider>基础属性</n-divider>
-                        <n-descriptions bordered :column="2">
-                          <n-descriptions-item label="生命值">
-                            {{ (playerStore.baseAttributes.health|| 0).toFixed(0) }}
-                          </n-descriptions-item>
-                          <n-descriptions-item label="攻击力">
-                            {{ (playerStore.baseAttributes.attack|| 0).toFixed(0) }}
-                          </n-descriptions-item>
-                          <n-descriptions-item label="防御力">
-                            {{ (playerStore.baseAttributes.defense|| 0).toFixed(0) }}
-                          </n-descriptions-item>
-                          <n-descriptions-item label="速度">
-                            {{ (playerStore.baseAttributes.speed || 0).toFixed(0) }}
-                          </n-descriptions-item>
-                        </n-descriptions>
-                        <n-divider>战斗属性</n-divider>
-                        <n-descriptions bordered :column="3">
-                          <n-descriptions-item label="暴击率">
-                            {{ (playerStore.combatAttributes.critRate * 100).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="连击率">
-                            {{ (playerStore.combatAttributes.comboRate * 100).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="反击率">
-                            {{ (playerStore.combatAttributes.counterRate * 100).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="眩晕率">
-                            {{ (playerStore.combatAttributes.stunRate * 100).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="闪避率">
-                            {{ (playerStore.combatAttributes.dodgeRate * 100).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="吸血率">
-                            {{ (playerStore.combatAttributes.vampireRate * 100).toFixed(1) }}%
-                          </n-descriptions-item>
-                        </n-descriptions>
-                        <n-divider>战斗抗性</n-divider>
-                        <n-descriptions bordered :column="3">
-                          <n-descriptions-item label="抗暴击">
-                            {{ (playerStore.combatResistance.critResist * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="抗连击">
-                            {{ (playerStore.combatResistance.comboResist * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="抗反击">
-                            {{ (playerStore.combatResistance.counterResist * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="抗眩晕">
-                            {{ (playerStore.combatResistance.stunResist * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="抗闪避">
-                            {{ (playerStore.combatResistance.dodgeResist * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="抗吸血">
-                            {{ (playerStore.combatResistance.vampireResist * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                        </n-descriptions>
-                        <n-divider>特殊属性</n-divider>
-                        <n-descriptions bordered :column="4">
-                          <n-descriptions-item label="强化治疗">
-                            {{ (playerStore.specialAttributes.healBoost * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="强化爆伤">
-                            {{ (playerStore.specialAttributes.critDamageBoost * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="弱化爆伤">
-                            {{ (playerStore.specialAttributes.critDamageReduce * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="最终增伤">
-                            {{ (playerStore.specialAttributes.finalDamageBoost * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="最终减伤">
-                            {{ (playerStore.specialAttributes.finalDamageReduce * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="战斗属性提升">
-                            {{ (playerStore.specialAttributes.combatBoost * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                          <n-descriptions-item label="战斗抗性提升">
-                            {{ (playerStore.specialAttributes.resistanceBoost * 100 || 0).toFixed(1) }}%
-                          </n-descriptions-item>
-                        </n-descriptions>
-                      </n-collapse-item>
-                    </n-collapse>
                     <n-progress type="line"
                       :percentage="Number(((playerStore.cultivation / playerStore.maxCultivation) * 100).toFixed(2))"
                       indicator-text-color="rgba(255, 255, 255, 0.82)" rail-color="rgba(32, 128, 240, 0.2)"
                       color="#2080f0" :show-indicator="true" indicator-placement="inside" processing />
+                    <n-collapse>
+                      <n-collapse-item title="详细信息" name="1">
+                        <n-tabs type="line" animated>
+                          <n-tab-pane name="1" tab="基础属性">
+                            <n-descriptions :column="2" label-placement='left'>
+                              <n-descriptions-item label="生命值">
+                                {{ (playerStore.baseAttributes.health || 0).toFixed(0) }}
+                              </n-descriptions-item>
+                              <n-descriptions-item label="攻击力">
+                                {{ (playerStore.baseAttributes.attack || 0).toFixed(0) }}
+                              </n-descriptions-item>
+                              <n-descriptions-item label="防御力">
+                                {{ (playerStore.baseAttributes.defense || 0).toFixed(0) }}
+                              </n-descriptions-item>
+                              <n-descriptions-item label="速度">
+                                {{ (playerStore.baseAttributes.speed || 0).toFixed(0) }}
+                              </n-descriptions-item>
+                            </n-descriptions>
+                          </n-tab-pane>
+                          <n-tab-pane name="2" tab="战斗属性">
+                            <n-descriptions :column="2" label-placement='left'>
+                              <n-descriptions-item label="暴击率">
+                                {{ (playerStore.combatAttributes.critRate * 100).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="连击率">
+                                {{ (playerStore.combatAttributes.comboRate * 100).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="反击率">
+                                {{ (playerStore.combatAttributes.counterRate * 100).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="眩晕率">
+                                {{ (playerStore.combatAttributes.stunRate * 100).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="闪避率">
+                                {{ (playerStore.combatAttributes.dodgeRate * 100).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="吸血率">
+                                {{ (playerStore.combatAttributes.vampireRate * 100).toFixed(1) }}%
+                              </n-descriptions-item>
+                            </n-descriptions>
+                          </n-tab-pane>
+                          <n-tab-pane name="3" tab="战斗抗性">
+                            <n-descriptions :column="2" label-placement='left'>
+                              <n-descriptions-item label="抗暴击">
+                                {{ (playerStore.combatResistance.critResist * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="抗连击">
+                                {{ (playerStore.combatResistance.comboResist * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="抗反击">
+                                {{ (playerStore.combatResistance.counterResist * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="抗眩晕">
+                                {{ (playerStore.combatResistance.stunResist * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="抗闪避">
+                                {{ (playerStore.combatResistance.dodgeResist * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="抗吸血">
+                                {{ (playerStore.combatResistance.vampireResist * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                            </n-descriptions>
+                          </n-tab-pane>
+                          <n-tab-pane name="4" tab="特殊属性">
+                            <n-descriptions :column="2" label-placement='left'>
+                              <n-descriptions-item label="强化治疗">
+                                {{ (playerStore.specialAttributes.healBoost * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="强化爆伤">
+                                {{ (playerStore.specialAttributes.critDamageBoost * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="弱化爆伤">
+                                {{ (playerStore.specialAttributes.critDamageReduce * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="最终增伤">
+                                {{ (playerStore.specialAttributes.finalDamageBoost * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="最终减伤">
+                                {{ (playerStore.specialAttributes.finalDamageReduce * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="战斗属性提升">
+                                {{ (playerStore.specialAttributes.combatBoost * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                              <n-descriptions-item label="战斗抗性提升">
+                                {{ (playerStore.specialAttributes.resistanceBoost * 100 || 0).toFixed(1) }}%
+                              </n-descriptions-item>
+                            </n-descriptions>
+                          </n-tab-pane>
+                        </n-tabs>
+                      </n-collapse-item>
+                    </n-collapse>
                   </n-space>
                 </n-card>
                 <router-view />
@@ -281,6 +287,7 @@ const handleMenuClick = (key) => {
   padding: 0;
   box-sizing: border-box;
 }
+
 :root {
   --n-color: rgb(16, 16, 20);
   --n-text-color: rgba(255, 255, 255, 0.82);
@@ -359,5 +366,9 @@ html.dark ::-webkit-scrollbar-thumb {
 
 html.dark ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+.n-descriptions-table-content__label {
+  color: #999;
 }
 </style>

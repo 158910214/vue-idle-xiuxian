@@ -128,37 +128,9 @@ const handleChangeName = () => {
             修改道号
           </n-button>
         </n-input-group>
-        <n-alert title="必看说明" type="warning">
-          本游戏为开源项目，如果您在任何地方通过付费方式购买了本游戏，请及时退款并投诉举报。
-        </n-alert>
-        <n-space>
-          <n-button type="warning" @click="handleReincarnation">
-            转世重修
-          </n-button>
-          <n-button @click="handleExportSave" type="info">
-            导出存档
-          </n-button>
-          <n-upload :show-file-list="false" @change="handleImportSave">
-            <n-button>导入存档</n-button>
-          </n-upload>
-          <n-button target="_blank" href="https://github.com/setube/vue-idle-xiuxian" tag="a" type="primary">
-            开源地址
-          </n-button>
-          <n-button type="error" @click="qq = true">
-            官方群聊
-          </n-button>
-        </n-space>
       </n-space>
     </n-card>
-    <n-modal preset="dialog" title="玩家交流群" v-model:show="qq">
-      <n-card :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <n-space vertical>
-          <n-input value="920930589" readonly type="text" />
-        </n-space>
-      </n-card>
-    </n-modal>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

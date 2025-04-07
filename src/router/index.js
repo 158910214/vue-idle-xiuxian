@@ -48,6 +48,7 @@ const routes = [
     component: GM,
     beforeEnter: (to, from, next) => {
       const playerStore = usePlayerStore()
+      import.meta.env.DEV && next()
       if (!playerStore.isGMMode) {
         next('/cultivation')
       } else {

@@ -68,6 +68,34 @@ export const locations = [
       { type: 'cultivation', chance: 0.25, amount: [800, 1500] },
       { type: 'pill_fragment', chance: 0.2, amount: [15, 20] }
     ]
+  },
+  // 渡劫期地点
+  {
+    id: 'celestial_palace',
+    name: '凌霄宝殿',
+    description: '传说中仙界最神圣的地方，只有最强大的修士才能进入。',
+    minLevel: 45,
+    spiritCost: 10000,
+    rewards: [
+      { type: 'spirit_stone', chance: 0.25, amount: [300, 600] },
+      { type: 'herb', chance: 0.3, amount: [100, 200] },
+      { type: 'cultivation', chance: 0.25, amount: [1500, 3000] },
+      { type: 'pill_fragment', chance: 0.2, amount: [20, 30] }
+    ]
+  },
+  // 仙人境地点
+  {
+    id: 'east_heaven',
+    name: '西天灵山',
+    description: '传说中西天灵山是佛门圣地，只有最虔诚的修士才能进入。',
+    minLevel: 55,
+    spiritCost: 20000,
+    rewards: [
+      { type: 'spirit_stone', chance: 0.25, amount: [600, 1200] },
+      { type: 'herb', chance: 0.3, amount: [200, 400] },
+      { type: 'cultivation', chance: 0.25, amount: [3000, 6000] },
+      { type: 'pill_fragment', chance: 0.2, amount: [30, 40] }
+    ]
   }
 ]
 
