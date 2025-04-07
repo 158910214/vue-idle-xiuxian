@@ -86,7 +86,7 @@ onUnmounted(() => {
 
 // 获取可用地点列表
 const availableLocations = computed(() => {
-  return locations.filter(loc => playerStore.level >= loc.minLevel)
+  return locations.filter(loc => playerStore.level >= loc.minLevel).sort((a, b) => b.minLevel - a.minLevel)
 })
 
 // 显示消息并处理重复
@@ -149,7 +149,22 @@ onUnmounted(() => {
             </template>
             探索各处秘境，寻找机缘造化。小心谨慎，危险与机遇并存。
           </n-alert>
-          <n-grid :cols="2" :x-gap="12">
+          <n-divider>探索统计</n-divider>
+          <n-descriptions :column="2" label-placement='left'>
+            <n-descriptions-item label="探索次数">
+              {{ playerStore.explorationCount }}
+            </n-descriptions-item>
+            <n-descriptions-item label="灵石数量">
+              {{ playerStore.spiritStones }}
+            </n-descriptions-item>
+            <n-descriptions-item label="灵草数量">
+              {{ playerStore.herbs.length }}
+            </n-descriptions-item>
+            <n-descriptions-item label="丹方残页">
+              {{Object.values(playerStore.pillFragments || {}).reduce((a, b) => a + b, 0)}}
+            </n-descriptions-item>
+          </n-descriptions>
+          <n-grid :cols="1" :x-gap="12">
             <n-grid-item v-for="location in availableLocations" :key="location.id">
               <n-card :title="location.name" size="small">
                 <n-space vertical>
@@ -173,21 +188,7 @@ onUnmounted(() => {
               </n-card>
             </n-grid-item>
           </n-grid>
-          <n-divider>探索统计</n-divider>
-          <n-descriptions :column="2" bordered>
-            <n-descriptions-item label="探索次数">
-              {{ playerStore.explorationCount }}
-            </n-descriptions-item>
-            <n-descriptions-item label="灵石数量">
-              {{ playerStore.spiritStones }}
-            </n-descriptions-item>
-            <n-descriptions-item label="灵草数量">
-              {{ playerStore.herbs.length }}
-            </n-descriptions-item>
-            <n-descriptions-item label="丹方残页">
-              {{ Object.values(playerStore.pillFragments || {}).reduce((a, b) => a + b, 0) }}
-            </n-descriptions-item>
-          </n-descriptions>
+
         </n-space>
       </n-card>
       <log-panel ref="logRef" title="探索日志" />

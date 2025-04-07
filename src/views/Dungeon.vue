@@ -135,7 +135,7 @@ const nextFloor = () => {
   const floor = dungeonState.value.floor
   // 检查是否需要显示选项
   if (floor === 1 || floor % 5 === 0) {
-    const randRefres = Math.floor(Math.random() * 3) + 1 
+    const randRefres = Math.floor(Math.random() * 3) + 1
     message.success(`获得了${randRefres}刷新次数`)
     refreshNumber.value = randRefres
     showOptions()
@@ -355,7 +355,7 @@ const handleRefreshOptions = () => {
           <template #header-extra>
             <n-space>
               <n-button type="primary" @click="handleRefreshOptions" :disabled="refreshNumber === 0">
-                刷新增益({{refreshNumber}})
+                刷新增益({{ refreshNumber }})
               </n-button>
             </n-space>
           </template>
@@ -364,9 +364,6 @@ const handleRefreshOptions = () => {
               :style="{ borderColor: getOptionColor(option.type).color }" @click="selectOption(option)">
               <div class="option-name">{{ option.name }}</div>
               <div class="option-description">{{ option.description }}</div>
-              <div class="option-quality" :style="{ color: getOptionColor(option.type).color }">
-                {{ getOptionColor(option.type).name }}
-              </div>
             </div>
           </div>
         </n-card>
@@ -406,7 +403,7 @@ const handleRefreshOptions = () => {
               </div>
             </div>
             <n-modal v-model:show="infoShow" preset="dialog"
-              :title="`${infoType == 'player' ? dungeonState.combatManager.player.name : dungeonState.combatManager.enemy.name }的属性`">
+              :title="`${infoType == 'player' ? dungeonState.combatManager.player.name : dungeonState.combatManager.enemy.name}的属性`">
               <n-card :bordered="false">
                 <!-- 玩家属性 -->
                 <template v-if="infoType == 'player'">
@@ -589,6 +586,12 @@ const handleRefreshOptions = () => {
   </div>
 </template>
 
+<style>
+.dungeon-container .n-card>.n-card__content,
+.dungeon-container .n-card>.n-card__footer {
+  padding: 0 14px;
+}
+</style>
 <style scoped>
 .dungeon-container {
   margin: 0 auto;
@@ -597,13 +600,12 @@ const handleRefreshOptions = () => {
 .option-cards {
   display: flex;
   gap: 16px;
-  padding: 16px;
   margin: 0 auto;
 }
 
 .option-card {
   position: relative;
-  padding: 20px;
+  padding: 20px 8px;
   border: 2px solid;
   border-radius: 12px;
   background: var(--n-color);
@@ -624,7 +626,6 @@ const handleRefreshOptions = () => {
   font-size: 1.3em;
   font-weight: bold;
   margin-bottom: 12px;
-  padding-right: 80px;
 }
 
 .option-description {
@@ -747,6 +748,7 @@ const handleRefreshOptions = () => {
     transform: scale(0.5) translateX(0);
     opacity: 1;
   }
+
   100% {
     transform: scale(1.5) translateX(200px);
     opacity: 0;
@@ -758,6 +760,7 @@ const handleRefreshOptions = () => {
     transform: scale(0.5) translateX(0);
     opacity: 1;
   }
+
   100% {
     transform: scale(1.5) translateX(-200px);
     opacity: 0;
@@ -768,15 +771,19 @@ const handleRefreshOptions = () => {
   0% {
     transform: translateX(0) rotate(0deg);
   }
+
   25% {
     transform: translateX(20px) rotate(5deg);
   }
+
   50% {
     transform: translateX(40px) rotate(0deg);
   }
+
   75% {
     transform: translateX(20px) rotate(-5deg);
   }
+
   100% {
     transform: translateX(0) rotate(0deg);
   }
@@ -786,12 +793,15 @@ const handleRefreshOptions = () => {
   0% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-10px);
   }
+
   75% {
     transform: translateX(10px);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -801,15 +811,19 @@ const handleRefreshOptions = () => {
   0% {
     transform: translateX(0) rotate(0deg);
   }
+
   25% {
     transform: translateX(-20px) rotate(-5deg);
   }
+
   50% {
     transform: translateX(-40px) rotate(0deg);
   }
+
   75% {
     transform: translateX(-20px) rotate(5deg);
   }
+
   100% {
     transform: translateX(0) rotate(0deg);
   }

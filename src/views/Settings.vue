@@ -129,6 +129,7 @@ const handleChangeName = () => {
           </n-button>
         </n-input-group>
       </n-space>
+      <n-button @click="handleReincarnation" type="error">转世重修</n-button>
     </n-card>
   </div>
 </template>

@@ -288,6 +288,13 @@ const handleMenuClick = (key) => {
   box-sizing: border-box;
 }
 
+@media screen and (min-width: 750px) {
+  body {
+    width: 750px;
+    margin: 0 auto;
+  }
+}
+
 :root {
   --n-color: rgb(16, 16, 20);
   --n-text-color: rgba(255, 255, 255, 0.82);

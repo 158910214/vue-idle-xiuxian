@@ -553,13 +553,12 @@ const options = [
                       </n-button>
                     </n-space>
                   </template>
-                  <p v-if="playerStore.equippedArtifacts[type]">
-                    {{ playerStore.equippedArtifacts[type].name }}
-                  </p>
-                  <p v-else>未装备</p>
                   <template #footer>
                     <n-space justify="space-between">
-                      <span>{{ name }}</span>
+                      <p v-if="playerStore.equippedArtifacts[type]">
+                        {{ playerStore.equippedArtifacts[type].name }}
+                      </p>
+                      <p v-else>未装备</p>
                       <n-button size="small" type="info"
                         @click.stop="showEquipmentDetails(playerStore.equippedArtifacts[type])"
                         v-if="playerStore.equippedArtifacts[type]">
@@ -662,7 +661,8 @@ const options = [
             </n-space>
             <n-modal v-model:show="showBatchReleaseConfirm" preset="dialog" title="批量放生确认" style="width: 600px">
               <p>
-                确定要放生{{ selectedRarityToRelease === 'all' ? '所有' : petRarities[selectedRarityToRelease].name }}品阶的未出战灵宠吗？此操作不可撤销。
+                确定要放生{{ selectedRarityToRelease === 'all' ? '所有' : petRarities[selectedRarityToRelease].name
+                }}品阶的未出战灵宠吗？此操作不可撤销。
               </p>
               <n-space justify="end" style="margin-top: 16px;">
                 <n-button size="small" @click="showBatchReleaseConfirm = false">取消</n-button>
@@ -676,7 +676,11 @@ const options = [
                 <n-card hoverable>
                   <template #header>
                     <n-space justify="space-between">
-                      <span>{{ pet.name }}</span>
+                      <span>{{ pet.name }}
+                        <n-tag :style="{ color: petRarities[pet.rarity].color }">
+                          {{ petRarities[pet.rarity].name }}
+                        </n-tag>
+                      </span>
                       <n-button size="small" type="primary" @click="useItem(pet)">
                         {{ playerStore.activePet?.id === pet.id ? '召回' : '出战' }}
                       </n-button>
@@ -684,9 +688,6 @@ const options = [
                   </template>
                   <p>{{ pet.description }}</p>
                   <n-space vertical>
-                    <n-tag :style="{ color: petRarities[pet.rarity].color }">
-                      {{ petRarities[pet.rarity].name }}
-                    </n-tag>
                     <n-space justify="space-between">
                       <n-text>等级: {{ pet.level || 1 }}</n-text>
                       <n-text>星级: {{ pet.star || 0 }}</n-text>
@@ -705,88 +706,98 @@ const options = [
   <!-- 灵宠详情弹窗 -->
   <n-modal v-model:show="showPetModal" preset="dialog" title="灵宠详情" style="width: 600px;">
     <template v-if="selectedPet">
-      <n-descriptions bordered>
+      <n-descriptions :column="3" label-placement='left'>
         <n-descriptions-item label="名称">{{ selectedPet.name }}</n-descriptions-item>
-        <n-descriptions-item label="品质">
-          <n-tag
-            :style="{ color: petRarities[selectedPet.rarity].color }">{{ petRarities[selectedPet.rarity].name }}</n-tag>
-        </n-descriptions-item>
         <n-descriptions-item label="等级">{{ selectedPet.level || 1 }}</n-descriptions-item>
+        <n-descriptions-item label="品质">
+          <n-tag :style="{ color: petRarities[selectedPet.rarity].color }">{{ petRarities[selectedPet.rarity].name
+          }}</n-tag>
+        </n-descriptions-item>
         <n-descriptions-item label="星级">{{ selectedPet.star || 0 }}</n-descriptions-item>
         <n-descriptions-item label="境界">{{ Math.floor((selectedPet.star || 0) / 5) }}阶</n-descriptions-item>
       </n-descriptions>
-      <n-divider>属性加成</n-divider>
-      <n-descriptions bordered>
-        <n-descriptions-item
-          label="攻击加成">+{{ (getPetBonus(selectedPet).attack * 100).toFixed(1) }}%</n-descriptions-item>
-        <n-descriptions-item
-          label="防御加成">+{{ (getPetBonus(selectedPet).defense * 100).toFixed(1) }}%</n-descriptions-item>
-        <n-descriptions-item
-          label="生命加成">+{{ (getPetBonus(selectedPet).health * 100).toFixed(1) }}%</n-descriptions-item>
-      </n-descriptions>
-      <n-divider>灵宠属性</n-divider>
       <n-collapse>
-        <n-collapse-item title="展开" name="1">
-          <n-divider>基础属性</n-divider>
-          <n-descriptions bordered :column="2">
-            <n-descriptions-item label="攻击力">{{ selectedPet.combatAttributes?.attack || 0 }}</n-descriptions-item>
-            <n-descriptions-item label="生命值">{{ selectedPet.combatAttributes?.health || 0 }}</n-descriptions-item>
-            <n-descriptions-item label="防御力">{{ selectedPet.combatAttributes?.defense || 0 }}</n-descriptions-item>
-            <n-descriptions-item label="速度">{{ selectedPet.combatAttributes?.speed || 0 }}</n-descriptions-item>
-          </n-descriptions>
-          <n-divider>战斗属性</n-divider>
-          <n-descriptions bordered :column="3">
-            <n-descriptions-item
-              label="暴击率">{{ ((selectedPet.combatAttributes?.critRate || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-            <n-descriptions-item
-              label="连击率">{{ ((selectedPet.combatAttributes?.comboRate || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-            <n-descriptions-item
-              label="反击率">{{ ((selectedPet.combatAttributes?.counterRate || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-            <n-descriptions-item
-              label="眩晕率">{{ ((selectedPet.combatAttributes?.stunRate || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-            <n-descriptions-item
-              label="闪避率">{{ ((selectedPet.combatAttributes?.dodgeRate || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-            <n-descriptions-item
-              label="吸血率">{{ ((selectedPet.combatAttributes?.vampireRate || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          </n-descriptions>
-        <n-divider>战斗抗性</n-divider>
-        <n-descriptions bordered :column="3">
-          <n-descriptions-item
-            label="抗暴击">{{ ((selectedPet.combatAttributes?.critResist || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="抗连击">{{ ((selectedPet.combatAttributes?.comboResist || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="抗反击">{{ ((selectedPet.combatAttributes?.counterResist || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="抗眩晕">{{ ((selectedPet.combatAttributes?.stunResist || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="抗闪避">{{ ((selectedPet.combatAttributes?.dodgeResist || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="抗吸血">{{ ((selectedPet.combatAttributes?.vampireResist || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-        </n-descriptions>
-        <n-divider>特殊属性</n-divider>
-        <n-descriptions bordered :column="3">
-          <n-descriptions-item
-            label="强化治疗">{{ ((selectedPet.combatAttributes?.healBoost || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="强化爆伤">{{ ((selectedPet.combatAttributes?.critDamageBoost || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="弱化爆伤">{{ ((selectedPet.combatAttributes?.critDamageReduce || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="最终增伤">{{ ((selectedPet.combatAttributes?.finalDamageBoost || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="最终减伤">{{ ((selectedPet.combatAttributes?.finalDamageReduce || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="战斗属性提升">{{ ((selectedPet.combatAttributes?.combatBoost || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-          <n-descriptions-item
-            label="战斗抗性提升">{{ ((selectedPet.combatAttributes?.resistanceBoost || 0) * 100).toFixed(1) }}%</n-descriptions-item>
-        </n-descriptions>
+        <n-collapse-item title="展开显示详细信息" name="1">
+          <n-tabs type="line" animated>
+            <n-tab-pane name="属性加成">
+              <n-descriptions :column="3" label-placement='left'>
+                <n-descriptions-item label="攻击加成">+{{ (getPetBonus(selectedPet).attack * 100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="防御加成">+{{ (getPetBonus(selectedPet).defense * 100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="生命加成">+{{ (getPetBonus(selectedPet).health * 100).toFixed(1)
+                }}%</n-descriptions-item>
+              </n-descriptions>
+            </n-tab-pane>
+            <n-tab-pane name="基础属性">
+              <n-descriptions :column="2" label-placement='left'>
+                <n-descriptions-item label="攻击力">{{ selectedPet.combatAttributes?.attack || 0 }}</n-descriptions-item>
+                <n-descriptions-item label="生命值">{{ selectedPet.combatAttributes?.health || 0 }}</n-descriptions-item>
+                <n-descriptions-item label="防御力">{{ selectedPet.combatAttributes?.defense || 0 }}</n-descriptions-item>
+                <n-descriptions-item label="速度">{{ selectedPet.combatAttributes?.speed || 0 }}</n-descriptions-item>
+              </n-descriptions>
+            </n-tab-pane>
+            <n-tab-pane name="战斗属性">
+              <n-descriptions :column="2" label-placement='left'>
+                <n-descriptions-item label="暴击率">{{ ((selectedPet.combatAttributes?.critRate || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="连击率">{{ ((selectedPet.combatAttributes?.comboRate || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="反击率">{{ ((selectedPet.combatAttributes?.counterRate || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="眩晕率">{{ ((selectedPet.combatAttributes?.stunRate || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="闪避率">{{ ((selectedPet.combatAttributes?.dodgeRate || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="吸血率">{{ ((selectedPet.combatAttributes?.vampireRate || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+              </n-descriptions>
+            </n-tab-pane>
+            <n-tab-pane name="战斗抗性">
+              <n-descriptions :column="2" label-placement='left'>
+                <n-descriptions-item label="抗暴击">{{ ((selectedPet.combatAttributes?.critResist || 0) * 100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="抗连击">{{ ((selectedPet.combatAttributes?.comboResist || 0) * 100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="抗反击">{{ ((selectedPet.combatAttributes?.counterResist || 0) *
+                  100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="抗眩晕">{{ ((selectedPet.combatAttributes?.stunResist || 0) * 100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="抗闪避">{{ ((selectedPet.combatAttributes?.dodgeResist || 0) * 100).toFixed(1)
+                }}%</n-descriptions-item>
+                <n-descriptions-item label="抗吸血">{{ ((selectedPet.combatAttributes?.vampireResist || 0) *
+                  100).toFixed(1)
+                }}%</n-descriptions-item>
+              </n-descriptions>
+            </n-tab-pane>
+            <n-tab-pane name="特殊属性">
+              <n-descriptions :column="2" label-placement='left'>
+                <n-descriptions-item label="强化治疗">{{ ((selectedPet.combatAttributes?.healBoost || 0) * 100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="强化爆伤">{{ ((selectedPet.combatAttributes?.critDamageBoost || 0) *
+                  100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="弱化爆伤">{{ ((selectedPet.combatAttributes?.critDamageReduce || 0) *
+                  100).toFixed(1) }}%</n-descriptions-item>
+                <n-descriptions-item label="最终增伤">{{ ((selectedPet.combatAttributes?.finalDamageBoost || 0) *
+                  100).toFixed(1) }}%</n-descriptions-item>
+                <n-descriptions-item label="最终减伤">{{ ((selectedPet.combatAttributes?.finalDamageReduce || 0) *
+                  100).toFixed(1) }}%</n-descriptions-item>
+                <n-descriptions-item label="战斗属性提升">{{ ((selectedPet.combatAttributes?.combatBoost || 0) *
+                  100).toFixed(1)
+                  }}%</n-descriptions-item>
+                <n-descriptions-item label="战斗抗性提升">{{ ((selectedPet.combatAttributes?.resistanceBoost || 0) *
+                  100).toFixed(1) }}%</n-descriptions-item>
+              </n-descriptions>
+            </n-tab-pane>
+          </n-tabs>
         </n-collapse-item>
       </n-collapse>
       <n-divider>操作</n-divider>
       <n-space vertical>
         <n-space justify="space-between">
-          <span>升级（消耗{{ getUpgradeCost(selectedPet) }} / {{ playerStore.petEssence}}灵宠精华）</span>
+          <span>升级（消耗{{ getUpgradeCost(selectedPet) }} / {{ playerStore.petEssence }}灵宠精华）</span>
           <n-button size="small" type="primary" @click="upgradePet(selectedPet)" :disabled="!canUpgrade(selectedPet)">
             升级
           </n-button>
@@ -822,8 +833,7 @@ const options = [
     style="width: 800px;">
     <n-space vertical>
       <n-space justify="space-between">
-        <n-select v-model:value="selectedQuality" :options="qualityOptions"
-          style="width: 150px" />
+        <n-select v-model:value="selectedQuality" :options="qualityOptions" style="width: 150px" />
         <n-button type="warning" :disabled="equipmentList.length === 0" @click="batchSellEquipments">一键卖出</n-button>
       </n-space>
       <n-pagination v-model:page="currentEquipmentPage" :page-size="equipmentPageSize"
@@ -993,4 +1003,3 @@ const options = [
   color: #666;
 }
 </style>
-

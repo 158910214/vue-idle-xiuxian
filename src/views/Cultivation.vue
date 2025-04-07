@@ -215,7 +215,7 @@ onUnmounted(() => {
         </n-button>
       </n-space>
       <n-divider>修炼详情</n-divider>
-      <n-descriptions bordered>
+      <n-descriptions :column="1" label-placement='left'>
         <n-descriptions-item label="灵力获取速率">
           {{ baseGainRate * playerStore.spiritRate }} / 秒
         </n-descriptions-item>
